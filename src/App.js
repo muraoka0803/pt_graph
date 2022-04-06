@@ -9,7 +9,7 @@ class App extends Component{
   constructor(){
     super();
     this.state = {
-      prefectures: {},
+      prefectures: {},  // 都道府県一覧のjson（{prefCode, prefName}）
     };
   }
 
