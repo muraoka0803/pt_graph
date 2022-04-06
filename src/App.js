@@ -4,6 +4,26 @@ import './App.css';
 /* RESAS APIから情報を取得 */
 const apiKey = "KMVXho2JeqwEGj7mmawLCYh20DnKDYlzhyeAqnsK"; // APIキー
 
+/* チェックボックスの生成 */
+function CheckboxList(props) {
+  const data = props.data;
+  const checkboxs = Object.keys(data).map(i => {
+    return(
+      <li
+        key={data[i].prefCode}
+        style={{margin: '5px', display: 'inline-block', width: '96px'}}
+      >
+        <input type="checkbox"/>
+        {data[i].prefName}
+      </li>
+    )
+  });
+
+  return(
+    <ul>{checkboxs}</ul>
+  );
+}
+
 class App extends Component{
 
   constructor(){
@@ -37,6 +57,7 @@ class App extends Component{
         {Object.keys(prefs).map(i => this.displayPref(prefs[i]))}
         <div>Title</div>
         <div>チェックボックス</div>
+        <CheckboxList data={prefs}/>
         <div>グラフ</div>
       </div>
     );
