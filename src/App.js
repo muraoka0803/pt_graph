@@ -9,9 +9,11 @@ class App extends Component{
   constructor(){
     super();
     this.state = {
-      prefectures: {},                // 都道府県一覧のjson（{prefCode, prefName}）
-      selected: Array(47).fill(false) // チェックボックスで選択されているかどうか
+      prefectures: {},                              // 都道府県一覧のjson（{prefCode, prefName}）
+      selected: Array(47).fill(false),              // チェックボックスで選択されているかどうか
+      populationData: {maxYear:undefined, data:[]}  // 人口数データ（maxYear:表示する年の最大値, data:({prefCode, data)）
     };
+    this.CheckboxList = this.CheckboxList.bind(this);
   }
 
   componentDidMount(){
@@ -30,7 +32,7 @@ class App extends Component{
     const selected = props.selected;
 
     // i番目の都道府県のチェックボックス
-    const makePrefCheckbox = (i) => {
+    const makePrefCheckbox = (i, app) => {
       return(
         <li
           key={data[i].prefCode}
@@ -38,7 +40,7 @@ class App extends Component{
         >
           <input
             type="checkbox"
-            onChange={() => onChange(i)}
+            onChange={() => onChange.bind(this)(i)}
           />
           {data[i].prefName}
         </li>
@@ -49,9 +51,40 @@ class App extends Component{
     const onChange = (i) =>{
       selected[i] = !selected[i];
       console.log(data[i].prefName+":"+selected[i]);
+      
+      if(selected[i]){
+        // チェックされた時の処理
+        // 人口数データの取得
+        fetch(`https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?cityCode=-&prefCode=${Number(i)+1}`, {headers: {'X-API-KEY': apiKey}})
+        .then(response => response.json())
+        .then(res => {
+          const data = res.result;
+          this.setState({
+            populationData: {
+              maxYear: data.boundaryYear, 
+              data: [...this.state.populationData.data, {prefCode:Number(i)+1, data:data.data[0].data}]
+            }
+          });
+        });
+      }else{
+        // チェックが外された時の処理
+        // 人口数データの消去
+        const maxYear = this.state.populationData.maxYear;
+        const data = this.state.populationData.data;
+        console.log(data);
+        let index = 0;
+        for(index=0; Number(i)+1 !== data[index].prefCode; index++);
+        
+        this.setState({
+          populationData: {
+            maxYear: maxYear,
+            data : [...data.slice(0, index), ...data.slice(index+1)]
+          }
+        });
+      }
     }
 
-    const checkboxs = Object.keys(data).map((i) => makePrefCheckbox(i));
+    const checkboxs = Object.keys(data).map((i) => makePrefCheckbox.bind(this)(i));
 
     return(
       <ul>{checkboxs}</ul>
