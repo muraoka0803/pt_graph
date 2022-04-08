@@ -4,32 +4,13 @@ import './App.css';
 /* RESAS APIから情報を取得 */
 const apiKey = "KMVXho2JeqwEGj7mmawLCYh20DnKDYlzhyeAqnsK"; // APIキー
 
-/* チェックボックスの生成 */
-function CheckboxList(props) {
-  const data = props.data;
-  const checkboxs = Object.keys(data).map(i => {
-    return(
-      <li
-        key={data[i].prefCode}
-        style={{margin: '5px', display: 'inline-block', width: '96px'}}
-      >
-        <input type="checkbox"/>
-        {data[i].prefName}
-      </li>
-    )
-  });
-
-  return(
-    <ul>{checkboxs}</ul>
-  );
-}
-
 class App extends Component{
 
   constructor(){
     super();
     this.state = {
-      prefectures: {},  // 都道府県一覧のjson（{prefCode, prefName}）
+      prefectures: {},                // 都道府県一覧のjson（{prefCode, prefName}）
+      selected: Array(47).fill(false) // チェックボックスで選択されているかどうか
     };
   }
 
@@ -43,6 +24,40 @@ class App extends Component{
     });
   }
 
+  /* チェックボックスの生成 */
+  CheckboxList(props) {
+    const data = props.data;
+    const selected = props.selected;
+
+    // i番目の都道府県のチェックボックス
+    const makePrefCheckbox = (i) => {
+      return(
+        <li
+          key={data[i].prefCode}
+          style={{margin: '5px', display: 'inline-block', width: '96px'}}
+        >
+          <input
+            type="checkbox"
+            onChange={() => onChange(i)}
+          />
+          {data[i].prefName}
+        </li>
+      );
+    }
+
+    // チェックボックスが更新された時の処理
+    const onChange = (i) =>{
+      selected[i] = !selected[i];
+      console.log(data[i].prefName+":"+selected[i]);
+    }
+
+    const checkboxs = Object.keys(data).map((i) => makePrefCheckbox(i));
+
+    return(
+      <ul>{checkboxs}</ul>
+    );
+  }
+
   // 都道府県一覧の表示
   displayPref(props){
     return(
@@ -52,12 +67,13 @@ class App extends Component{
 
   render(){
     const prefs = this.state.prefectures;
+    const selected = this.state.selected;
     return (
       <div className="App">
-        {Object.keys(prefs).map(i => this.displayPref(prefs[i]))}
+        {/* {Object.keys(prefs).map(i => this.displayPref(prefs[i]))} */}
         <div>Title</div>
         <div>チェックボックス</div>
-        <CheckboxList data={prefs}/>
+        <this.CheckboxList data={prefs} selected={selected}/>
         <div>グラフ</div>
       </div>
     );
