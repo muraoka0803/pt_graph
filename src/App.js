@@ -49,8 +49,10 @@ class App extends Component{
 
     // チェックボックスが更新された時の処理
     const onChange = (i) =>{
+      const prefName = data[i].prefName;
+
       selected[i] = !selected[i];
-      console.log(data[i].prefName+":"+selected[i]);
+      console.log(prefName+":"+selected[i]);
       
       if(selected[i]){
         // チェックされた時の処理
@@ -59,11 +61,13 @@ class App extends Component{
         .then(response => response.json())
         .then(res => {
           const data = res.result;
-          this.setState({
-            populationData: {
-              maxYear: data.boundaryYear, 
-              data: [...this.state.populationData.data, {prefCode:Number(i)+1, data:data.data[0].data}]
-            }
+          this.setState((state) => {
+            return({
+              populationData: {
+                maxYear: data.boundaryYear, 
+                data: [...this.state.populationData.data, {prefName:prefName, data:data.data[0].data}]
+              }
+            });
           });
         });
       }else{
@@ -73,7 +77,7 @@ class App extends Component{
         const data = this.state.populationData.data;
         console.log(data);
         let index = 0;
-        for(index=0; Number(i)+1 !== data[index].prefCode; index++);
+        for(index=0; prefName !== data[index].prefName; index++);
         
         this.setState({
           populationData: {
