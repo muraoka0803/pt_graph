@@ -25,7 +25,7 @@ class App extends Component{
     fetch('https://opendata.resas-portal.go.jp/api/v1/prefectures', {headers: {'X-API-KEY': apiKey}})
     .then(response => response.json())
     .then(res => {
-      console.log(res.result);
+      // console.log(res.result);
       this.setState({prefectures: res.result});
     });
   }
@@ -56,7 +56,7 @@ class App extends Component{
       const prefName = data[i].prefName;
 
       selected[i] = !selected[i];
-      console.log(prefName+":"+selected[i]);
+      // console.log(prefName+":"+selected[i]);
       
       if(selected[i]){
         // チェックされた時の処理
@@ -79,7 +79,7 @@ class App extends Component{
         // 人口数データの消去
         const maxYear = this.state.populationData.maxYear;
         const data = this.state.populationData.data;
-        console.log(data);
+        // console.log(data);
         let index = 0;
         for(index=0; prefName !== data[index].prefName; index++);
         
@@ -108,9 +108,19 @@ class App extends Component{
 
   /* グラフの描画 */
   Graph(props){
-    
-    const maxYear = props.data.result.boundaryYear; // 最終年数
-    const data = props.data.result.data[0].data;    // 人口データ
+    const maxYear = props.data.maxYear;             // 最終年数
+    let prefNames = Array(props.data.data.length);  // 描画する都道府県のリスト
+    let data = [];                                  // グラフデータ
+
+    // 人口数データをグラフデータの形式に変換
+    props.data.data.forEach((element, i) => {
+      const prefName = element.prefName;
+      prefNames[i] = prefName;
+      element.data.forEach((element, j) => {
+        if(i === 0) data.push({year: element.year, [prefName]: element.value});
+        else data[j][prefName] = element.value;
+      });
+    });
 
     return(
       <div>
@@ -126,8 +136,10 @@ class App extends Component{
           <YAxis>
             <Label value="人口数" offset="32" position="top"/>
           </YAxis>
-          <Legend align='right' verticalAlign='top'/>
-          <Line name="prefName" type="lineer" dataKey="value"/>
+          <Legend align='center' verticalAlign='bottom'/>
+          {prefNames.map((prefName) => {
+            return <Line name={prefName} type="lineer" dataKey={prefName}/>
+          })}
         </LineChart>
       </div>
     );
@@ -135,7 +147,7 @@ class App extends Component{
   
   render(){
     const prefs = this.state.prefectures;
-    const graphData = this.sample;
+    const graphData = this.state.populationData;
     const selected = this.state.selected;
     return (
       <div className="App">
