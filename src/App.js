@@ -4,8 +4,6 @@ import { scaleOrdinal } from 'd3-scale';
 import { schemeCategory10 } from 'd3-scale-chromatic';
 import './App.css';
 
-import { data_sample } from './sample.js';
-
 const colors = scaleOrdinal(schemeCategory10).range();
 
 /* RESAS APIから情報を取得 */
@@ -20,7 +18,6 @@ class App extends Component{
       selected: Array(47).fill(false),                // チェックボックスで選択されているかどうか
       populationData: {maxYear:undefined, data:[]}    // 人口数データ（maxYear:表示する年の最大値, data:({prefCode, data)）
     };
-    this.sample = data_sample;                        // グラフデータのサンプル
     this.CheckboxList = this.CheckboxList.bind(this);
   }
 
