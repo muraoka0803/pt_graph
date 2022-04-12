@@ -126,13 +126,13 @@ class App extends Component{
     return(
       <div>
         <LineChart
-          width={800}
-          height={500}
+          width={document.body.clientWidth}
+          height={document.body.clientWidth/1.5}
           data={data}
           margin={{top:64, right:128, bottom:32, left:32}}
         >
           <XAxis dataKey="year" type={'number'} allowDataOverflow="true" domain={['dataMin', maxYear]}>
-            <Label value="年度" offset="64" position="right"/>
+            <Label value="年度" offset="32" position="right"/>
           </XAxis>
           <YAxis>
             <Label value="人口数" offset="32" position="top"/>
