@@ -1,8 +1,12 @@
 import { Component } from 'react';
 import { Label, Legend, Line, LineChart, XAxis, YAxis } from 'recharts';
+import { scaleOrdinal } from 'd3-scale';
+import { schemeCategory10 } from 'd3-scale-chromatic';
 import './App.css';
 
 import { data_sample } from './sample.js';
+
+const colors = scaleOrdinal(schemeCategory10).range();
 
 /* RESAS APIから情報を取得 */
 const apiKey = "KMVXho2JeqwEGj7mmawLCYh20DnKDYlzhyeAqnsK"; // APIキー
@@ -25,7 +29,6 @@ class App extends Component{
     fetch('https://opendata.resas-portal.go.jp/api/v1/prefectures', {headers: {'X-API-KEY': apiKey}})
     .then(response => response.json())
     .then(res => {
-      // console.log(res.result);
       this.setState({prefectures: res.result});
     });
   }
@@ -41,7 +44,6 @@ class App extends Component{
       return(
         <li
           key={data[i].prefCode}
-          style={{margin: '5px', display: 'inline-block', width: '96px'}}
         >
           <input
             type="checkbox"
@@ -57,7 +59,6 @@ class App extends Component{
       const prefName = data[i].prefName;
 
       selected[i] = !selected[i];
-      // console.log(prefName+":"+selected[i]);
       
       if(selected[i]){
         // チェックされた時の処理
@@ -80,7 +81,6 @@ class App extends Component{
         // 人口数データの消去
         const maxYear = this.state.populationData.maxYear;
         const data = this.state.populationData.data;
-        // console.log(data);
         let index = 0;
         for(index=0; prefName !== data[index].prefName; index++);
         
@@ -139,7 +139,7 @@ class App extends Component{
           </YAxis>
           <Legend align='center' verticalAlign='bottom'/>
           {prefNames.map((prefName, index) => {
-            return <Line name={prefName} type="lineer" dataKey={prefName} key={index}/>
+            return <Line name={prefName} type="lineer" dataKey={prefName} key={index} stroke={colors[index % colors.length]}/>
           })}
         </LineChart>
       </div>
@@ -152,11 +152,11 @@ class App extends Component{
     const selected = this.state.selected;
     return (
       <div className="App">
-        {/* {Object.keys(prefs).map(i => this.displayPref(prefs[i]))} */}
-        <div>Title</div>
-        <div>チェックボックス</div>
-        <this.CheckboxList data={prefs} selected={selected}/>
-        <div>グラフ</div>
+        <h1 className="PageTitle">Title</h1>
+        <div className="PrefList">
+          <div>都道府県</div>
+          <this.CheckboxList data={prefs} selected={selected}/>
+        </div>
         <this.Graph data={graphData}/>
       </div>
     );

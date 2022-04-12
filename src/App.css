@@ -1,0 +1,29 @@
+.App{
+    font-size: min(4vw, 25px);
+}
+
+.PageTitle{
+    text-align: center;
+    background-color: rgb(200, 200, 200);
+}
+
+.PrefList{
+    padding: 0% 5%;
+}
+
+ul{
+    padding: 0% 0% 0% min(5%, 64px);
+}
+
+li{
+    display: inline-block;
+    width: min(25vw, 150px);
+    margin: min(2.5%, 16px) 0%;
+    text-align: left;
+    font-size: max(20%, auto);
+}
+
+input[type=checkbox]{
+    transform: scale(2);
+    margin-right: 10%;
+}
