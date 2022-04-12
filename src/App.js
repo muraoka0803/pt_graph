@@ -36,7 +36,8 @@ class App extends Component{
     const selected = props.selected;
 
     // i番目の都道府県のチェックボックス
-    const makePrefCheckbox = (i, app) => {
+    const makePrefCheckbox = (props) => {
+      const i = props.item;
       return(
         <li
           key={data[i].prefCode}
@@ -92,7 +93,7 @@ class App extends Component{
       }
     }
 
-    const checkboxs = Object.keys(data).map((i) => makePrefCheckbox.bind(this)(i));
+    const checkboxs = Object.keys(data).map((item, index) => makePrefCheckbox.bind(this)({item:item, key:index}));
 
     return(
       <ul>{checkboxs}</ul>
@@ -137,8 +138,8 @@ class App extends Component{
             <Label value="人口数" offset="32" position="top"/>
           </YAxis>
           <Legend align='center' verticalAlign='bottom'/>
-          {prefNames.map((prefName) => {
-            return <Line name={prefName} type="lineer" dataKey={prefName}/>
+          {prefNames.map((prefName, index) => {
+            return <Line name={prefName} type="lineer" dataKey={prefName} key={index}/>
           })}
         </LineChart>
       </div>
