@@ -1,7 +1,7 @@
 {
   "name": "pt_graph",
   "version": "0.1.0",
-  "homepage": "./",
+  "homepage": "https://muraoka0803.github.io/public_pt_graph",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.3",
